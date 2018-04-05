@@ -54,11 +54,11 @@ classdef NWB_file < File
             if ~exist('options','var')
                 options = savejson('',struct());
             end
-            VERS_MAJOR = 0;
-            VERS_MINOR = 1;
-            VERS_PATCH = 1;
+            VERS_MAJOR = 1;
+            VERS_MINOR = 0;
+            VERS_PATCH = 0;
             FILE_VERSION_STR = sprintf('NWB-%d.%d.%d', VERS_MAJOR, VERS_MINOR, VERS_PATCH);
-            IDENT_PREFIX = ['Neurodata h5gate testing'  FILE_VERSION_STR  ': '];
+            IDENT_PREFIX = ['Kavli Institute for Systems Neuroscience, '  FILE_VERSION_STR  ': '];
             options = loadjson(options);
             if isempty(options)
                 options = struct();
@@ -85,7 +85,7 @@ classdef NWB_file < File
             self@File(fname, core, default_ns, options);
             % setup initial metadata        
             self.set_dataset('neurodata_version', FILE_VERSION_STR);
-            hstr = [IDENT_PREFIX datestr(now, 'ddd mmm dd HH:MM:SS yyyy') '--' self.file_name];
+            hstr = [IDENT_PREFIX datestr(now, 'ddd mmm dd HH:MM:SS yyyy')];
             self.set_dataset('identifier', hstr);
             self.set_dataset('file_create_date', datestr(now, 'ddd mmm dd HH:MM:SS yyyy'));
             if strcmp(start_time, '')

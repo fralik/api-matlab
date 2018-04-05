@@ -220,38 +220,41 @@ classdef Dataset < Node
                     end                                                                
                 end
                 if ismember('dimensions', fieldnames(df))
-                    if strcmp(dsinfo.shape,'scalar')
-                        disp('** Error, scalar dimension mismatch');
-                        %dbstack
-                        error('mk_ds_info:scalar_mismatch', 'scalar dimension mismatch'); 
-                    end
-                    dsinfo.dimensions = df.dimensions;
-                    if ~isempty(dsinfo.shape) && max(size(dsinfo.dimensions) ~= dsinfo.shape)
-%                         disp(fprintf(...
-%                             ['** Warning, %i dimensions functionined in data set,'...
-%                             'but number of dimensions in value assigned is %i'],...
-%                             numel(dsinfo.dimensions),dsinfo.shape(2)));
-                        %dbstack
-%                         warning('mk_ds_info:dimension_mismatch', 'Dimension mismatch in dataset'); 
-                    else
-                    % check for any dimensions functionined in dataset
-                        dims = dsinfo.dimensions;
-                        for i = 1:numel(dims)
-                            if strcmp(dims{i}(end), ('^'))
-                                scope = 'global';
-                            else
-                                scope = 'local';
-                            end
-                            if ~isempty(dsinfo.shape)
-                                dsinfo.dimdef.(dims{i}) = ...
-                                    struct('scope',scope, 'len', dsinfo.shape(i)); % TO DO: check len value, taking shape doesn't seem correct
-                            else
-                                dsinfo.dimdef.(dims{i}) = struct('scope',scope, 'len', 0);
-                            end
-                            if ismember(dims{i}, fieldnames(df))
-                                dsinfo.dimdef.(dims{i}) = Group.merge( dsinfo.dimdef.(dims{i}),df.(dims{i}));
+                    try
+                        if strcmp(dsinfo.shape,'scalar')
+                            disp('** Error, scalar dimension mismatch');
+                            %dbstack
+                            error('mk_ds_info:scalar_mismatch', 'scalar dimension mismatch'); 
+                        end
+                        dsinfo.dimensions = df.dimensions;
+                        if ~isempty(dsinfo.shape) && max(size(dsinfo.dimensions) ~= dsinfo.shape)
+    %                         disp(fprintf(...
+    %                             ['** Warning, %i dimensions functionined in data set,'...
+    %                             'but number of dimensions in value assigned is %i'],...
+    %                             numel(dsinfo.dimensions),dsinfo.shape(2)));
+                            %dbstack
+    %                         warning('mk_ds_info:dimension_mismatch', 'Dimension mismatch in dataset'); 
+                        else
+                        % check for any dimensions functionined in dataset
+                            dims = dsinfo.dimensions;
+                            for i = 1:numel(dims)
+                                if strcmp(dims{i}(end), ('^'))
+                                    scope = 'global';
+                                else
+                                    scope = 'local';
+                                end
+                                if ~isempty(dsinfo.shape)
+                                    dsinfo.dimdef.(dims{i}) = ...
+                                        struct('scope',scope, 'len', dsinfo.shape(i)); % TO DO: check len value, taking shape doesn't seem correct
+                                else
+                                    dsinfo.dimdef.(dims{i}) = struct('scope',scope, 'len', 0);
+                                end
+                                if ismember(dims{i}, fieldnames(df))
+                                    dsinfo.dimdef.(dims{i}) = Group.merge( dsinfo.dimdef.(dims{i}),df.(dims{i}));
+                                end
                             end
                         end
+                    catch
                     end
                 end
                 if ismember('attributes', fieldnames(df))
